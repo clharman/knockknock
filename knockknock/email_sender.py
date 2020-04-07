@@ -44,54 +44,48 @@ def email_sender(recipient_emails: list, sender_email: str = None):
                 master_process = True
 
             if master_process:
-                contents = ['Your training has started.',
-                            'Machine name: %s' % host_name,
-                            'Main call: %s' % func_name,
-                            'Starting date: %s' % start_time.strftime(DATE_FORMAT)]
+                contents = ['%s' % host_name,
+                            '%s' % func_name,
+                            '%s' % start_time.strftime(DATE_FORMAT)]
                 for i in range(len(recipient_emails)):
                     current_recipient = recipient_emails[i]
-                    yag_sender.send(current_recipient, 'Training has started 🎬', contents)
+                    yag_sender.send(current_recipient, 'STARTED', contents)
             try:
                 value = func(*args, **kwargs)
 
                 if master_process:
                     end_time = datetime.datetime.now()
                     elapsed_time = end_time - start_time
-                    contents = ["Your training is complete.",
-                                'Machine name: %s' % host_name,
-                                'Main call: %s' % func_name,
-                                'Starting date: %s' % start_time.strftime(DATE_FORMAT),
-                                'End date: %s' % end_time.strftime(DATE_FORMAT),
-                                'Training duration: %s' % str(elapsed_time)]
+                    contents = ['%s' % host_name,
+                                '%s' % func_name,
+                                '%s' % start_time.strftime(DATE_FORMAT),
+                                '%s' % end_time.strftime(DATE_FORMAT),
+                                '%s' % str(elapsed_time)]
 
                     try:
                         str_value = str(value)
-                        contents.append('Main call returned value: %s'% str_value)
+                        contents.append('%s'% str_value)
                     except:
-                        contents.append('Main call returned value: %s'% "ERROR - Couldn't str the returned value.")
+                        contents.append('%s'% "ERROR str(value)")
 
                     for i in range(len(recipient_emails)):
                         current_recipient = recipient_emails[i]
-                        yag_sender.send(current_recipient, 'Training has sucessfully finished!', contents)
+                        yag_sender.send(current_recipient, 'DONE', contents)
 
                 return value
 
             except Exception as ex:
                 end_time = datetime.datetime.now()
                 elapsed_time = end_time - start_time
-                contents = ["Your training has crashed.",
-                            'Machine name: %s' % host_name,
-                            'Main call: %s' % func_name,
-                            'Starting date: %s' % start_time.strftime(DATE_FORMAT),
-                            'Crash date: %s' % end_time.strftime(DATE_FORMAT),
-                            'Crashed training duration: %s\n\n' % str(elapsed_time),
-                            "Here's the error:",
-                            '%s\n\n' % ex,
-                            "Traceback:",
-                            '%s' % traceback.format_exc()]
+                contents = ['%s' % host_name,
+                            '%s' % func_name,
+                            '%s' % start_time.strftime(DATE_FORMAT),
+                            '%s' % end_time.strftime(DATE_FORMAT),
+                            '%s' % str(elapsed_time),
+                            '%s' % ex]
                 for i in range(len(recipient_emails)):
                     current_recipient = recipient_emails[i]
-                    yag_sender.send(current_recipient, 'Training has crashed ☠️', contents)
+                    yag_sender.send(current_recipient, 'CRASHED', contents)
                 raise ex
 
         return wrapper_sender
