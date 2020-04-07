@@ -72,7 +72,7 @@ def email_sender(recipient_emails: list, sender_email: str = None):
 
                     for i in range(len(recipient_emails)):
                         current_recipient = recipient_emails[i]
-                        yag_sender.send(current_recipient, 'Training has sucessfully finished 🎉', contents)
+                        yag_sender.send(current_recipient, 'Training has sucessfully finished!', contents)
 
                 return value
 
